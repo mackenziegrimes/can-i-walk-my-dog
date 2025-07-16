@@ -1,35 +1,41 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useState } from "react";
+
+import { Button, Icon } from "@mui/material";
+import MyLocationIcon from "@mui/icons-material/MyLocationOutlined";
+
+import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0)
+  // { latitude, longitude }
+  const [userLocation, setUserLocation] = useState();
+
+  useEffect(() => {
+    if (!userLocation) {
+      return;
+    }
+    console.log("Got location:", userLocation);
+  }, [userLocation]);
+
+  const handleLocationClick = (evt) => {
+    navigator.geolocation.getCurrentPosition((position) =>
+      setUserLocation(position.coords)
+    );
+  };
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
+      <h1>Can I Walk My Dog?</h1>
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
+        <Button
+          variant="contained"
+          onClick={handleLocationClick}
+          startIcon={<MyLocationIcon />}
+        >
+          Use my location
+        </Button>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
