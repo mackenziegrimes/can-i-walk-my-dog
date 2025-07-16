@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 
-import { Button, Icon } from "@mui/material";
+import { Button } from "@mui/material";
 import MyLocationIcon from "@mui/icons-material/MyLocationOutlined";
 
 import "./App.css";
+
+import WeatherForecast from "./components/WeatherForecast";
 
 function App() {
   // { latitude, longitude }
@@ -33,6 +35,16 @@ function App() {
         >
           Use my location
         </Button>
+
+        {userLocation && (
+          <div style={{ display: "flex", gap: "4px", flexDirection: "row" }}>
+            <p>Location:</p>
+            <p>
+              {userLocation.latitude}, {userLocation.longitude}
+            </p>
+          </div>
+        )}
+        <WeatherForecast location={userLocation} />
       </div>
     </>
   );
