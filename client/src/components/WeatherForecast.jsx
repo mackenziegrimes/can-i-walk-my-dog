@@ -1,8 +1,9 @@
 import { useState, useEffect, useMemo } from "react";
+import { List, ListItem } from "@mui/material";
 
 import { fetchPointForecast } from "../api/weathergov";
-import { List, ListItem } from "@mui/material";
-import { getDayOfWeek } from "../utils";
+import { getDayOfWeek, getMonthOfYear } from "../utils";
+import Meteogram from "./Meteogram";
 
 /**
  *
@@ -12,8 +13,10 @@ import { getDayOfWeek } from "../utils";
  */
 function WeatherForecast({ location }) {
   const [pointData, setPointData] = useState([]);
-  const [issueDt, setIssueDt] = useState();
+  const [issuedAt, setIssuedAt] = useState();
 
+  // fetch hourly weather forecast from weather.gov
+  // TODO: a useEffect here is bad
   useEffect(() => {
     if (!location) {
       return;
@@ -27,7 +30,7 @@ function WeatherForecast({ location }) {
         console.log("Got response:", response);
 
         setPointData(response?.properties.periods);
-        setIssueDt(response?.properties.updateTime);
+        setIssuedAt(response?.properties.updateTime);
       } catch (err) {
         console.error("Failed to forecast from weather.gov:", err);
       }
@@ -39,44 +42,61 @@ function WeatherForecast({ location }) {
     if (!pointData) {
       return null;
     }
-    return pointData.map((point) => ({
-      x: Date.parse(point.startTime),
+    const meteogramData = pointData.map((point) => ({
+      time: Date.parse(point.startTime),
       temperature: point.temperature,
+      temperatureUnits: point.temperatureUnits,
     }));
+    return meteogramData.slice(0, 100); // only show first 100 hours for now
   }, [pointData]);
   console.log("Data:", data);
 
+  const issueDt = issuedAt ? new Date(Date.parse(issuedAt)) : null;
+
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
-      {issueDt && <p>Last updated: {issueDt}</p>}
+      {issueDt && (
+        <p>
+          Last updated:{" "}
+          {`${getMonthOfYear(
+            issueDt
+          )} ${issueDt.getDate()} at ${issueDt.toLocaleTimeString()}`}
+        </p>
+      )}
       {location && (
-        <List>
-          {pointData.map((point) => {
-            const startDt = new Date(Date.parse(point.startTime));
-            const dayOfWeek = getDayOfWeek(startDt);
-            const startDtString = `${dayOfWeek} ${startDt.getDate()} ${startDt.getHours()}`;
+        <Meteogram data={data} />
 
-            return (
-              <ListItem key={point.startDt}>
-                <div
-                  style={{ display: "flex", flexDirection: "row", gap: "4px" }}
-                >
-                  <p>{startDtString}</p>
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      gap: "2px",
-                    }}
-                  >
-                    <p style={{ fontWeight: "bold" }}>{point.temperature}</p>
-                    <p>{point.temperatureUnit}</p>
-                  </div>
-                </div>
-              </ListItem>
-            );
-          })}
-        </List>
+        // <List>
+        //   {pointData.map((point) => {
+        //     const startDt = new Date(Date.parse(point.startTime));
+        //     const dayOfWeek = getDayOfWeek(startDt);
+        //     const startDtString = `${dayOfWeek} ${startDt.getDate()} ${startDt.getHours()}`;
+
+        //     return (
+        //         <ListItem key={point.startDt}>
+        //           <div
+        //             style={{
+        //               display: "flex",
+        //               flexDirection: "row",
+        //               gap: "4px",
+        //             }}
+        //           >
+        //             <p>{startDtString}</p>
+        //             <div
+        //               style={{
+        //                 display: "flex",
+        //                 flexDirection: "row",
+        //                 gap: "2px",
+        //               }}
+        //             >
+        //               <p style={{ fontWeight: "bold" }}>{point.temperature}</p>
+        //               <p>{point.temperatureUnit}</p>
+        //             </div>
+        //           </div>
+        //         </ListItem>
+        //     );
+        //   })}
+        // </List>
       )}
     </div>
   );

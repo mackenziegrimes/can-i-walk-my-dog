@@ -1,6 +1,6 @@
 # Can I Walk My Dog?
 
-Yes/No web app based on the weather.
+Simple web app (React.JS + Vite) to tell you when it's a good idea to walk your dog, based on the official National Weather Service forecast.
 
 Vite template README below this point.
 

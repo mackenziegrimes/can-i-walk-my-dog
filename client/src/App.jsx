@@ -3,9 +3,8 @@ import { useEffect, useState } from "react";
 import { Button } from "@mui/material";
 import MyLocationIcon from "@mui/icons-material/MyLocationOutlined";
 
-import "./App.css";
-
 import WeatherForecast from "./components/WeatherForecast";
+import "./App.css";
 
 function App() {
   // { latitude, longitude }
@@ -27,7 +26,11 @@ function App() {
   return (
     <>
       <h1>Can I Walk My Dog?</h1>
-      <div className="card">
+      <div
+        className="card"
+        style={{ width: "100%", border: "1px solid black" }}
+      >
+        {/* TODO: support entering lat/lon or choosing on map */}
         <Button
           variant="contained"
           onClick={handleLocationClick}

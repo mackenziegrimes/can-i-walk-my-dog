@@ -37,6 +37,7 @@ h1 {
   line-height: 1.1;
 }
 
+/* TODO Why doesn't this have any effect on MUI Button? */
 button {
   border-radius: 8px;
   border: 1px solid transparent;
@@ -44,7 +45,7 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  text-transform: capitalize; /* TODO Why doesn't this work? */
+  text-transform: capitalize;
   background-color: #1a1a1a;
   cursor: pointer;
   transition: border-color 0.25s;
