@@ -1,12 +1,12 @@
 import { useState, useEffect, useMemo } from "react";
 import { LineChart } from "@mui/x-charts/LineChart";
 
-import { getDayOfWeek } from "../utils";
+import { getDayOfWeek } from "../utils/time";
 
 /**
  *
  * @param {Object} props
- * @param {Object?} props.location
+ * @param {Object?} props.data
  * @returns
  */
 function Meteogram({ data }) {
@@ -17,6 +17,7 @@ function Meteogram({ data }) {
           {
             dataKey: "time",
             valueFormatter: (value) => {
+              // TODO: this uses 24-hour time, most Americans prefer 12H time
               const dt = new Date(value);
               const dayOfWeek = getDayOfWeek(dt);
               return `${dayOfWeek} ${dt.getDate()} ${dt.getHours()}:00`;
@@ -29,18 +30,20 @@ function Meteogram({ data }) {
             dataKey: "temperature",
             // domainLimit: ([min, max]) => (min + 5, max + 5),
             // TODO: hard-coding a 5F spacing above and below data
-            min: Math.min(...data.map((point) => point.temperature)) - 5,
-            max: Math.max(...data.map((point) => point.temperature)) + 5,
+            min:
+              Math.min(...data.map((point) => point.apparentTemperature)) - 5,
+            max:
+              Math.max(...data.map((point) => point.apparentTemperature)) + 5,
           },
         ]}
         series={[
           {
-            label: "Temperature",
+            label: "Heat Index (ºF)",
             color: "rgb(180, 0, 0)",
             showMark: false,
             // area: true,
             // baseline: 80,
-            dataKey: "temperature",
+            dataKey: "apparentTemperature",
           },
         ]}
         dataset={data}

@@ -40,14 +40,30 @@ function App() {
         </Button>
 
         {userLocation && (
-          <div style={{ display: "flex", gap: "4px", flexDirection: "row" }}>
-            <p>Location:</p>
-            <p>
-              {userLocation.latitude}, {userLocation.longitude}
-            </p>
+          <div
+            style={{
+              display: "flex",
+              gap: "16px",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                gap: "4px",
+                flexDirection: "row",
+                color: "rgba(0, 0, 0, 0.4)",
+              }}
+            >
+              <p>Location:</p>
+              <p>
+                {userLocation.latitude}, {userLocation.longitude}
+              </p>
+            </div>
+            <WeatherForecast location={userLocation} />
           </div>
         )}
-        <WeatherForecast location={userLocation} />
       </div>
     </>
   );

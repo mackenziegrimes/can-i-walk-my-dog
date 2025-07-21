@@ -1,17 +1,20 @@
 const BASE_URL = "https://api.weather.gov";
 
-const fetchPointForecast = async ({ latitude, longitude }) =>
+const fetchPointMetadata = async ({ latitude, longitude }) => {
+  // look up weather.gov location based on lat/lon
+  const locationResponse = await fetch(
+    `${BASE_URL}/points/${latitude},${longitude}`
+  );
+  const data = await locationResponse.json();
+  console.log("/points returned data:", data);
+  return data;
+};
+
+const fetchHourlyForecast = async ({ metadataResponse }) =>
   // { transform = () => {} }
   {
-    // look up weather.gov location based on lat/lon
-    const locationResponse = await fetch(
-      `${BASE_URL}/points/${latitude},${longitude}`
-    );
-    const data = await locationResponse.json();
-    console.log("/points returned data:", data);
-
     // follow redirect to hourly forecast endpoint
-    const hourlyForecastEndpoint = data?.properties.forecastHourly;
+    const hourlyForecastEndpoint = metadataResponse?.properties.forecastHourly;
     if (!hourlyForecastEndpoint) {
       throw new Error("weather.gov /points unexpected repsonse:", data);
     }
@@ -21,4 +24,14 @@ const fetchPointForecast = async ({ latitude, longitude }) =>
     // return transform(data); // TODO: would be nice to have this
   };
 
-export { fetchPointForecast };
+const fetchGridForecast = async ({ metadataResponse }) => {
+  const gridForecastEndpoint = metadataResponse?.properties.forecastGridData;
+  if (!gridForecastEndpoint) {
+    throw new Error("weather.gov /points unexpected repsonse:", data);
+  }
+
+  const response = await fetch(gridForecastEndpoint);
+  return response.json();
+};
+
+export { fetchHourlyForecast, fetchGridForecast, fetchPointMetadata };
